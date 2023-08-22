@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-
+from service import image
 import crud
-import database
+from db import database
 import schemas
-from utils import image_handler
 
+# 定义路由
 router = APIRouter()
 
 
@@ -19,20 +19,30 @@ def get_db():
         db.close()
 
 
+# 创建图像
 @router.post("/images/", response_model=schemas.Image)
-def create_image(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    file_path = image_handler.save_image(file)  # 存储图片并获取存储路径
-    return crud.create_image(db=db, image=schemas.ImageCreate(file_name=file.filename), file_path=file_path)
+def create_image(prompt_id: int, sd_var_id: int, db: Session = Depends(get_db)):
+    return image.generate_and_store_image(prompt_id=prompt_id, sd_var_id=sd_var_id, db=db)
 
 
+# 查询图像列表
 @router.get("/images/", response_model=list[schemas.Image])
-def list_images(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud.get_images(db, skip=skip, limit=limit)
+def list_images(page: int = 1, page_size: int = 10, db: Session = Depends(get_db)):
+    # 计算跳过的数量
+    skip = (page - 1) * page_size
+    # 计算每页的数量
+    limit = page_size
+    # 返回查询结果
+    return crud.get_images(db=db, skip=skip, limit=limit)
 
 
+# 查询图像
 @router.get("/images/{image_id}/", response_model=schemas.StableDiffusionPrompt)
 def get_image(image_id: int, db: Session = Depends(get_db)):
-    db_image = crud.get_image(db, image_id=image_id)
+    # 根据图像id查询图像
+    db_image = crud.get_image(db=db, image_id=image_id)
+    # 如果查询不到图像，抛出404异常
     if db_image is None:
         raise HTTPException(status_code=404, detail="image not found")
+    # 返回查询结果
     return db_image

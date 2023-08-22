@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from os import environ
 
-DATABASE_URL = "mysql+pymysql://gada:uf4iHfQXZ43XmWnH@localhost:3306/gada"
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(environ.get("MYSQL_URL"))
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

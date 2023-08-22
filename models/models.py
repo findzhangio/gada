@@ -1,5 +1,6 @@
+# models.py
 from sqlalchemy import Column, Integer, String, Boolean, FLOAT
-from database import Base
+from db.database import Base
 
 
 class Image(Base):
@@ -17,14 +18,14 @@ class StableDiffusionPrompt(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     subject = Column(String(length=32))
-    prompt_content = Column(String(length=1024))
+    prompt_content = Column(String(length=4096))
 
 
 class StableDiffusionVar(Base):
     __tablename__ = "stable_diffusion_vars"
 
     id = Column(Integer, primary_key=True, index=True)
-    negative_prompt = Column(String(length=1024))
+    negative_prompt = Column(String(length=2048))
     steps = Column(Integer)
     sampler_name = Column(String(length=32))
     width = Column(Integer)
@@ -40,3 +41,10 @@ class StableDiffusionVar(Base):
     controlnet_units = Column(String(length=64))
 
 
+class ImageTask(Base):
+    __tablename__ = "image_tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    sd_prompt_id = Column(Integer)
+    sd_var_id = Column(Integer)
+    count = Column(Integer)

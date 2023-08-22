@@ -5,7 +5,7 @@ logger = logging.getLogger('mylogger')
 logger.setLevel(logging.DEBUG)
 
 # 2、创建一个handler，用于写入日志文件
-fh = logging.FileHandler('twbot.log')
+fh = logging.FileHandler('gada.log')
 fh.setLevel(logging.DEBUG)
 
 # 再创建一个handler，用于输出到控制台

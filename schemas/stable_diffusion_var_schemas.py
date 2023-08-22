@@ -2,40 +2,6 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-class ImageBase(BaseModel):
-    sd_prompt_id: Optional[int]
-    sd_var_id: Optional[int]
-    file_name: str
-    cos_path: str
-
-
-class ImageCreate(ImageBase):
-    pass
-
-
-class Image(ImageBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-class StableDiffusionPromptBase(BaseModel):
-    subject: str
-    prompt_content: str
-
-
-class StableDiffusionPromptCreate(StableDiffusionPromptBase):
-    pass
-
-
-class StableDiffusionPrompt(StableDiffusionPromptBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
 class StableDiffusionVarBase(BaseModel):
     negative_prompt: str
     steps: int
@@ -51,6 +17,7 @@ class StableDiffusionVarBase(BaseModel):
     hr_resize_y: int
     denoising_strength: float
     controlnet_units: str
+
 
 class StableDiffusionVarUpdate(BaseModel):
     negative_prompt: Optional[str]
@@ -72,9 +39,9 @@ class StableDiffusionVarUpdate(BaseModel):
 class StableDiffusionVarCreate(StableDiffusionVarBase):
     pass
 
+
 class StableDiffusionVar(StableDiffusionVarBase):
     id: int
 
     class Config:
-        orm_mode = True
-
+        from_attributes = True
