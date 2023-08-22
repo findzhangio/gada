@@ -23,7 +23,7 @@ jobs:
       - name: Login to Aliyun registry
         uses: azure/docker-login@v1
         with:
-          login-server: ${{ ACR_REGISTRY }}
+          login-server: ACR_REGISTRY
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
@@ -39,10 +39,9 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_SERVER }}
-          username: root
+          username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest
-            docker stop fastapi-app || true
-            docker rm fastapi-app || true
-            docker run -d --name fastapi-app -p 80:80 ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest
+            cd /data/gada  || true
+            bash -x update.sh $ACR_REGISTRY/$REGISTRY_NAMESPACE/$$APP_NAME:$IMAGE_TAG
+            echo "script complete"
