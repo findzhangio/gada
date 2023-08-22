@@ -1,0 +1,48 @@
+name: Build and Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ develop, main ]
+
+env:
+  REGISTRY_NAMESPACE: cloudali
+  ACR_REGISTRY: registry.cn-hangzhou.aliyuncs.com
+  APP_NAME: gada
+  IMAGE_TAG: ${{ github.sha }}
+  DEPLOY_ENV: dev
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Aliyun registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ ACR_REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Docker build image
+        run: |
+          docker build --file Dockerfile -t $ACR_REGISTRY/$REGISTRY_NAMESPACE/$APP_NAME:$IMAGE_TAG .
+
+      - name: Docker push for ACR
+        run: |
+          docker push $ACR_REGISTRY/$REGISTRY_NAMESPACE/$$APP_NAME:$IMAGE_TAG
+
+      - name: Deploy to Ubuntu server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_SERVER }}
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest
+            docker stop fastapi-app || true
+            docker rm fastapi-app || true
+            docker run -d --name fastapi-app -p 80:80 ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest
