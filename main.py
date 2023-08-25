@@ -13,10 +13,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # React 默认端口
+    allow_origins=list(environ.get("ALLOW_ORIGINS", default=[])),
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=list(environ.get("ALLOW_METHODS", default=["*"])),
+    allow_headers=list(environ.get("ALLOW_HEADERS", default=["*"])),
 )
 
 
