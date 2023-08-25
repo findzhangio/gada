@@ -27,10 +27,16 @@ def create_sd_vars(sd_vars: schemas.StableDiffusionVarCreate, db: Session = Depe
 
 
 # 查询SD变量
-@router.get("/sd_vars/", response_model=list[schemas.StableDiffusionVar])
-def list_sd_vars(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+@router.get("/sd_vars/", response_model=schemas.StableDiffusionVarList)
+def list_sd_vars(page: int = 1, page_size: int = 10, db: Session = Depends(get_db)):
+    total = crud.get_var_total(db)
+    # 计算跳过的数量
+    skip = (page - 1) * page_size
+    # 计算每页的数量
+    limit = page_size
     # 调用crud的get_vars函数，查询SD变量
-    return crud.get_vars(db, skip=skip, limit=limit)
+    data = crud.get_vars(db, skip=skip, limit=limit)
+    return {"total": total, "data": data}
 
 
 # 根据ID查询SD变量

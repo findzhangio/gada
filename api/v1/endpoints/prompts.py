@@ -26,10 +26,18 @@ def create_prompt(subject, db: Session = Depends(get_db)):
     return generate_and_store_prompt(db=db, subject=subject)
 
 
-@router.get("/prompts/", response_model=list[schemas.StableDiffusionPrompt])
-def list_prompts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    # 调用crud.get_prompts函数，获取prompt
-    return crud.get_prompts(db, skip=skip, limit=limit)
+@router.get("/prompts/", response_model=schemas.StableDiffusionPromptList)
+def list_prompts(page: int = 1, page_size: int = 10, db: Session = Depends(get_db)):
+    """
+    获取所有的prompts
+    """
+    total = crud.get_prompt_total(db)
+    # 计算跳过的数量
+    skip = (page - 1) * page_size
+    # 计算每页的数量
+    limit = page_size
+    data = crud.get_prompts(db, skip=skip, limit=limit)
+    return {"total": total, "data": data}
 
 
 @router.get("/prompts/{prompt_id}/", response_model=schemas.StableDiffusionPrompt)

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 
 class ImageBase(BaseModel):
@@ -18,3 +18,8 @@ class Image(ImageBase):
 
     class Config:
         from_attributes = True
+
+
+class ImageList(BaseModel):
+    total: int
+    data: List[Image]

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import models
+import models
 import schemas
 from typing import Optional
 
@@ -13,6 +13,10 @@ def get_image(db: Session, image_id: int) -> Optional[models.Image]:
 def get_images(db: Session, skip: int = 0, limit: int =10):
     # 返回查询到的图片
     return db.query(models.Image).offset(skip).limit(limit).all()
+
+
+def get_image_total(db: Session) -> int:
+    return db.query(models.Image).count()
 
 
 def create_image(db: Session, image: schemas.ImageCreate):

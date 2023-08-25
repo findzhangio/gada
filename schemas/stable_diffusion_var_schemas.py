@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 
 class StableDiffusionVarBase(BaseModel):
@@ -45,3 +45,8 @@ class StableDiffusionVar(StableDiffusionVarBase):
 
     class Config:
         from_attributes = True
+
+
+class StableDiffusionVarList(BaseModel):
+    total: int
+    data: List[StableDiffusionVar]

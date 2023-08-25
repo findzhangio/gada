@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import models
+import models
 import schemas
 
 
@@ -8,12 +8,12 @@ def get_var(db: Session, var_id: int):
     return db.query(models.StableDiffusionVar).filter(models.StableDiffusionVar.id == var_id).first()
 
 
-def get_var_total(db: Session) -> int:
-    return db.query(models.StableDiffusionVar).count()
-
-
 def get_vars(db: Session, skip: int = 0, limit: int = 10):
     return db.query(models.StableDiffusionVar).offset(skip).limit(limit).all()
+
+
+def get_var_total(db: Session) -> int:
+    return db.query(models.StableDiffusionVar).count()
 
 
 def create_var(db: Session, var: schemas.StableDiffusionVarCreate):

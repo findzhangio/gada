@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 
 class StableDiffusionPromptBase(BaseModel):
@@ -21,3 +21,8 @@ class StableDiffusionPrompt(StableDiffusionPromptBase):
 class StableDiffusionPromptUpdate(BaseModel):
     subject: Optional[str]
     prompt_content: Optional[str]
+
+
+class StableDiffusionPromptList(BaseModel):
+    total: int
+    data: List[StableDiffusionPrompt]

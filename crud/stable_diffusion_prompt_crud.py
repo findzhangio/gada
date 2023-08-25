@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import models
+import models
 import schemas
 
 
@@ -8,12 +8,12 @@ def get_prompt(db: Session, prompt_id: int):
     return db.query(models.StableDiffusionPrompt).filter(models.StableDiffusionPrompt.id == prompt_id).first()
 
 
-def get_prompt_total(db: Session) -> int:
-    return db.query(models.StableDiffusionPrompt).count()
-
-
 def get_prompts(db: Session, skip: int = 0, limit: int = 10):
     return db.query(models.StableDiffusionPrompt).offset(skip).limit(limit).all()
+
+
+def get_prompt_total(db: Session) -> int:
+    return db.query(models.StableDiffusionPrompt).count()
 
 
 def create_prompt(db: Session, prompt: schemas.StableDiffusionPromptCreate):
