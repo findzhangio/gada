@@ -36,12 +36,15 @@ jobs:
 
       - name: Deploy to Ubuntu server via SSH
         uses: appleboy/ssh-action@master
+        env:
+          IMAGE_NAME: ${{ env.ACR_REGISTRY }}/${{ env.REGISTRY_NAMESPACE }}/${{ env.APP_NAME }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
         with:
           host: ${{ secrets.SSH_SERVER }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /data/gada  || true
-            echo "$ACR_REGISTRY/$REGISTRY_NAMESPACE/$APP_NAME:$IMAGE_TAG"
-            bash update.sh $ACR_REGISTRY/$REGISTRY_NAMESPACE/$APP_NAME:$IMAGE_TAG
+            echo "$IMAGE_TAG"
+            bash update.sh $IMAGE_NAME $IMAGE_TAG
             echo "script complete"
