@@ -1,12 +1,12 @@
 import openai
-from os import environ
 from log import logger
+from config import Config
 
 
 class OpenaiClient(object):
     def create_gpt35(self, content):
         # 设置OpenAI的API Key
-        openai.api_key = environ.get("OPENAI_API_KEY")
+        openai.api_key = Config.OPENAI_API_KEY
         logger.debug("content: %s", content)
         # 创建一个ChatCompletion对象，用于获取输入的内容
         completion = openai.ChatCompletion.create(model="gpt-3.5-turbo",

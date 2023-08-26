@@ -4,10 +4,11 @@ from service.image import generate_and_store_image
 from contextlib import contextmanager
 from db import database
 from os import environ
+from config import Config
 
 celery_app = Celery(
     "fastapi_app",
-    broker=environ.get("REDIS_URL"),  # 使用Redis作为消息代理
+    broker=Config.REDIS_URL,  # 使用Redis作为消息代理
 )
 
 

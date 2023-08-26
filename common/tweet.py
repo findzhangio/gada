@@ -1,14 +1,15 @@
 from tweepy import Client, OAuthHandler, API
 import os
 from log import logger
+from config import Config
 
 
 class TweetClient(object):
-    consumer_key = os.environ.get("CONSUMER_KEY")
-    consumer_secret = os.environ.get("CONSUMER_SECRET")
-    access_token = os.environ.get("ACCESS_TOKEN")
-    access_token_secret = os.environ.get("ACCESS_TOKEN_SECRET")
-    bearer_token = os.environ.get("BEARER_TOKEN")
+    consumer_key = Config.CONSUMER_KEY
+    consumer_secret = Config.CONSUMER_SECRET
+    access_token = Config.ACCESS_TOKEN
+    access_token_secret = Config.ACCESS_TOKEN_SECRET
+    bearer_token = Config.BEARER_TOKEN
 
     def create_v1(self):
         auth = OAuthHandler(self.consumer_key, self.consumer_secret)

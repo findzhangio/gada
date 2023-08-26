@@ -1,15 +1,13 @@
 from datetime import datetime
 
-import os
 import webuiapi
 from PIL.PngImagePlugin import PngImageFile
 from PIL import Image
 from log import logger
+from config import Config
 
 
-sd_host = os.environ.get("SD_WEBUI_HOST", "127.0.0.1")
-sd_port = os.environ.get("SD_WEBUI_PORT", "7860")
-sd_webui_client = webuiapi.WebUIApi(host=sd_host, port=sd_port)
+sd_webui_client = webuiapi.WebUIApi(host=Config.SD_WEBUI_HOST, port=Config.SD_WEBUI_PORT)
 
 
 def save_img(img, filename=None):

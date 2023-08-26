@@ -1,6 +1,8 @@
 from os import environ
 from qcloud_cos import CosConfig, CosS3Client
 
+from config import Config
+
 
 class TencentCOS:
     def __init__(self, cos_region, cos_secret_id, cos_secret_key, cos_bucket):
@@ -41,8 +43,8 @@ class TencentCOS:
         return response
 
 
-secret_id = environ.get('COS_SECRET_ID', None)
-secret_key = environ.get('COS_SECRET_KEY', None)
-region = environ.get('COS_REGION', None)
-bucket = environ.get('COS_BUCKET', None)
+secret_id = Config.COS_SECRET_ID
+secret_key = Config.COS_SECRET_KEY
+region = Config.COS_REGION
+bucket = Config.COS_BUCKET
 tencent_cos_client = TencentCOS(cos_region=region, cos_secret_id=secret_id, cos_secret_key=secret_key, cos_bucket=bucket)

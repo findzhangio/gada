@@ -3,11 +3,11 @@ from fastapi import HTTPException, status
 import crud
 from db import database
 import schemas
-from os import environ
 from common.stable_diffusion_client import sd_webui_client, openpose
 from common.tencent_cos import tencent_cos_client
 from utils.image_handler import save_img
 from log import logger
+from config import Config
 
 
 # Dependency
@@ -20,8 +20,8 @@ def get_db():
 
 
 def generate_and_store_image(prompt_id, sd_var_id, db):
-    image_cache_path = environ.get('IMAGE_CACHE_PATH', './tmp/')
-    cos_path = environ.get('COS_IMAGE_PATH', '/sd/')
+    image_cache_path = Config.IMAGE_CACHE_PATH
+    cos_path = Config.COS_IMAGE_PATH
     sd_prompt = crud.get_prompt(db, prompt_id)
     if not sd_prompt:
         raise ValueError("Prompt not found")
