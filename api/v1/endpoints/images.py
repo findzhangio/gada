@@ -46,3 +46,17 @@ def get_image(image_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="image not found")
     # 返回查询结果
     return db_image
+
+
+# 删除图像
+@router.delete("/images/{image_id}/", response_model=schemas.Image)
+def delete_image(image_id: int, db: Session = Depends(get_db)):
+    # 根据图像ID查询图像
+    db_image = crud.get_image(db, image_id=image_id)
+    # 如果图像不存在，则抛出404错误
+    if db_image is None:
+        raise HTTPException(status_code=404, detail="Image not found")
+    # 删除图像
+    crud.delete_image(db, image_id=image_id)
+    # 返回被删除的图像
+    return db_image

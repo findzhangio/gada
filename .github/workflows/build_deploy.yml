@@ -42,5 +42,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /data/gada  || true
-            bash -x update.sh $ACR_REGISTRY/$REGISTRY_NAMESPACE/$APP_NAME:$IMAGE_TAG
+            echo "$ACR_REGISTRY/$REGISTRY_NAMESPACE/$APP_NAME:$IMAGE_TAG"
+            bash update.sh $ACR_REGISTRY/$REGISTRY_NAMESPACE/$APP_NAME:$IMAGE_TAG
             echo "script complete"
