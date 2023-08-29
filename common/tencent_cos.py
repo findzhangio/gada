@@ -1,4 +1,4 @@
-from os import environ
+# common/tencent_cos.py
 from qcloud_cos import CosConfig, CosS3Client
 
 from config import Config
