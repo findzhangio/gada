@@ -1,0 +1,203 @@
+name: gada
+services:
+  gada:
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "1073741824"
+        reservations:
+          cpus: "0.25"
+          memory: "268435456"
+    environment:
+      ACCESS_TOKEN: 1678734574946230272-jKgucg4BG3T3aYZHVoBbRQM3ZiDNLo
+      ACCESS_TOKEN_SECRET: qWJQ7DZigmKQKfm0h0nIu3onlG6SO2VDU9duG1oVm95tf
+      ALLOW_ORIGINS: http://gada-web.amap.work
+      BEARER_TOKEN: AAAAAAAAAAAAAAAAAAAAAII0pAEAAAAABVxTBXxW0U0tNN5Zi56T5GKQuLM%3DzzF5UQkaNKHWymPQDjB6Xxq8Lcb5mR5vaL1oCs5tXq7IPXAALF
+      CONSUMER_KEY: q1jIgVtN59uWe0DdRp3an29YY
+      CONSUMER_SECRET: 5U4C1jZUnobnwqBUXP6YD0NXYw0cBpseC1NMmHLFkRFiDgCIBt
+      COS_BUCKET: image-1255602134
+      COS_IMAGE_PATH: /sd/
+      COS_REGION: ap-hongkong
+      COS_SECRET_ID: AKIDgCXfaGjxUo24yhEXaP1QcZ7SaZLtEMFt
+      COS_SECRET_KEY: d2LeppiRu9vgLq8C2dz8qKckjW5RaWGm
+      IMAGE_CACHE_PATH: ./tmp/
+      MYSQL_URL: mysql+pymysql://gada:uf4iHfQXZ43XmWnH@mysql:3306/gada
+      OPENAI_API_KEY: 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
+      REDIS_URL: redis://:HJcmfsXrZX5QINoz@redis:6379/0
+      SD_WEBUI_HOST: dev-sdxl.bantouyan.com
+      SD_WEBUI_PORT: "443"
+      SERVER_PORT: "8080"
+    image: registry.cn-hongkong.aliyuncs.com/alihk/gada:d589241a70c9b37372554271967187b50a68c47a
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 8080
+      published: "8080"
+      protocol: tcp
+  gada-web:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "268435456"
+        reservations:
+          cpus: "0.1"
+          memory: "67108864"
+    image: registry.cn-hongkong.aliyuncs.com/alihk/gada-web:3da4f0882f22370a2b18df6d6cd9d5d20b85cca7
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 80
+      published: "80"
+      protocol: tcp
+  gada-worker:
+    command:
+    - celery
+    - -A
+    - celery_app
+    - worker
+    - --loglevel=info
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "1073741824"
+        reservations:
+          cpus: "0.25"
+          memory: "268435456"
+    environment:
+      ACCESS_TOKEN: 1678734574946230272-jKgucg4BG3T3aYZHVoBbRQM3ZiDNLo
+      ACCESS_TOKEN_SECRET: qWJQ7DZigmKQKfm0h0nIu3onlG6SO2VDU9duG1oVm95tf
+      BEARER_TOKEN: AAAAAAAAAAAAAAAAAAAAAII0pAEAAAAABVxTBXxW0U0tNN5Zi56T5GKQuLM%3DzzF5UQkaNKHWymPQDjB6Xxq8Lcb5mR5vaL1oCs5tXq7IPXAALF
+      CONSUMER_KEY: q1jIgVtN59uWe0DdRp3an29YY
+      CONSUMER_SECRET: 5U4C1jZUnobnwqBUXP6YD0NXYw0cBpseC1NMmHLFkRFiDgCIBt
+      COS_BUCKET: image-1255602134
+      COS_IMAGE_PATH: /sd/
+      COS_REGION: ap-hongkong
+      COS_SECRET_ID: AKIDgCXfaGjxUo24yhEXaP1QcZ7SaZLtEMFt
+      COS_SECRET_KEY: d2LeppiRu9vgLq8C2dz8qKckjW5RaWGm
+      IMAGE_CACHE_PATH: ./tmp/
+      MYSQL_URL: mysql+pymysql://gada:uf4iHfQXZ43XmWnH@mysql:3306/gada
+      OPENAI_API_KEY: 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
+      REDIS_URL: redis://:HJcmfsXrZX5QINoz@redis:6379/0
+      SD_WEBUI_HOST: dev-sdxl.bantouyan.com
+      SD_WEBUI_PORT: "443"
+      SERVER_PORT: "8080"
+    image: registry.cn-hongkong.aliyuncs.com/alihk/gada:d589241a70c9b37372554271967187b50a68c47a
+    networks:
+      default: null
+  minio:
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "2147483648"
+        reservations:
+          cpus: "0.05"
+          memory: "268435456"
+    environment:
+      MINIO_ROOT_PASSWORD: uf4iHfQXZ43XmWnH
+      MINIO_ROOT_USER: root
+    image: bitnami/minio:2023.6.23
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 9000
+      published: "9000"
+      protocol: tcp
+    - mode: ingress
+      target: 9001
+      published: "9001"
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: minio_data
+      target: /data
+      volume: {}
+  mysql:
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "2147483648"
+        reservations:
+          cpus: "0.1"
+          memory: "268435456"
+    environment:
+      MYSQL_DATABASE: gada
+      MYSQL_PASSWORD: uf4iHfQXZ43XmWnH
+      MYSQL_ROOT_PASSWORD: 5emmxhTmkCfMg1OE
+      MYSQL_USER: gada
+    healthcheck:
+      test:
+      - CMD
+      - /opt/bitnami/scripts/mysql/healthcheck.sh
+      timeout: 5s
+      interval: 15s
+      retries: 6
+    image: bitnami/mysql:8.0.33
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 3306
+      published: "3306"
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: volume
+      source: mysql_data
+      target: /bitnami/mysql/data
+      volume: {}
+  redis:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "1073741824"
+        reservations:
+          cpus: "0.1"
+          memory: "268435456"
+    environment:
+      REDIS_DISABLE_COMMANDS: FLUSHDB,FLUSHALL
+      REDIS_PASSWORD: HJcmfsXrZX5QINoz
+    healthcheck:
+      test:
+      - CMD
+      - redis-cli
+      - --raw
+      - incr
+      - ping
+      timeout: 5s
+      interval: 15s
+      retries: 6
+    image: bitnami/redis:6.2.12
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 6379
+      published: "6379"
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: redis_data
+      target: /bitnami/redis/data
+      volume: {}
+networks:
+  default:
+    name: gada_default
+volumes:
+  minio_data:
+    name: gada_minio_data
+    driver: local
+  mysql_data:
+    name: gada_mysql_data
+    driver: local
+  redis_data:
+    name: gada_redis_data
+    driver: local
